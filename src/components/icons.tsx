@@ -34,3 +34,29 @@ export function GithubIcon() {
     </svg>
   );
 }
+
+export function GmailIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+      <rect x="1.5" y="4" width="21" height="16" rx="2.5" fill="#fff" stroke="#E2E5E9" />
+      <path
+        d="M2 6.2L10.4 13l1.6 1.2 1.6-1.2L22 6.2"
+        fill="none"
+        stroke="#EA4335"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+ 
+export function CalendarIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+      <rect x="2" y="3" width="20" height="19" rx="2.5" fill="#fff" stroke="#E2E5E9" />
+      <rect x="2" y="3" width="20" height="5.5" rx="2.5" fill="#4285F4" />
+      <rect x="9" y="12" width="6" height="6" rx="1" fill="#34A853" />
+    </svg>
+  );
+}
