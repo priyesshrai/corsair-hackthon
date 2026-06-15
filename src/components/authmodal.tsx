@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { display, mono } from "@/lib/fonts";
 import { GoogleIcon, GithubIcon } from "./icons";
+import { authClient } from "@/lib/auth-client";
+import { Loader2 } from "lucide-react";
 
 export type AuthMode = "login" | "signup";
 
@@ -13,7 +15,14 @@ interface AuthModalProps {
   onModeChange: (mode: AuthMode) => void;
 }
 
-export default function AuthModal({ open, mode, onClose, onModeChange }: AuthModalProps) {
+export default function AuthModal({
+  open,
+  mode,
+  onClose,
+  onModeChange,
+}: AuthModalProps) {
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+
   // Close on Escape
   useEffect(() => {
     if (!open) return;
@@ -42,7 +51,10 @@ export default function AuthModal({ open, mode, onClose, onModeChange }: AuthMod
         aria-labelledby="auth-modal-title"
       >
         <div className="flex items-center justify-between">
-          <h2 id="auth-modal-title" className={`${display.className} text-lg font-semibold`}>
+          <h2
+            id="auth-modal-title"
+            className={`${display.className} text-lg font-semibold`}
+          >
             {isLogin ? "Sign in to Relay" : "Create your account"}
           </h2>
           <button
@@ -50,7 +62,13 @@ export default function AuthModal({ open, mode, onClose, onModeChange }: AuthMod
             aria-label="Close"
             className="rounded-md p-1 text-muted transition hover:text-ink"
           >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              aria-hidden="true"
+            >
               <path
                 d="M2 2l12 12M14 2L2 14"
                 stroke="currentColor"
@@ -65,10 +83,26 @@ export default function AuthModal({ open, mode, onClose, onModeChange }: AuthMod
         <div className="mt-5 flex flex-col gap-2">
           <button
             type="button"
+            onClick={async () => {
+              try {
+                setIsGoogleLoading(true);
+
+                await authClient.signIn.social({
+                  provider: "google",
+                });
+              } finally {
+                setIsGoogleLoading(false);
+              }
+            }}
             className="flex items-center justify-center gap-2 rounded-md border border-line px-4 py-2.5 text-sm font-medium transition hover:border-muted"
           >
-            <GoogleIcon />
-            Continue with Google
+            {isGoogleLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <GoogleIcon />
+            )}
+
+            {isGoogleLoading ? "Redirecting..." : "Continue with Google"}
           </button>
           <button
             type="button"
@@ -82,16 +116,24 @@ export default function AuthModal({ open, mode, onClose, onModeChange }: AuthMod
         {/* Divider */}
         <div className="my-5 flex items-center gap-3">
           <span className="h-px flex-1 bg-line" />
-          <span className={`${mono.className} text-[11px] uppercase tracking-wide text-muted`}>
+          <span
+            className={`${mono.className} text-[11px] uppercase tracking-wide text-muted`}
+          >
             or
           </span>
           <span className="h-px flex-1 bg-line" />
         </div>
 
         {/* Email / password */}
-        <form className="flex flex-col gap-3" onSubmit={(e) => e.preventDefault()}>
+        <form
+          className="flex flex-col gap-3"
+          onSubmit={(e) => e.preventDefault()}
+        >
           <div>
-            <label htmlFor="auth-email" className="mb-1 block text-xs text-muted">
+            <label
+              htmlFor="auth-email"
+              className="mb-1 block text-xs text-muted"
+            >
               Email
             </label>
             <input
@@ -105,7 +147,10 @@ export default function AuthModal({ open, mode, onClose, onModeChange }: AuthMod
             />
           </div>
           <div>
-            <label htmlFor="auth-password" className="mb-1 block text-xs text-muted">
+            <label
+              htmlFor="auth-password"
+              className="mb-1 block text-xs text-muted"
+            >
               Password
             </label>
             <input
